@@ -14,7 +14,7 @@ from scipy.optimize import least_squares
 
 from .collision import edge_is_free
 from .rrt import plan_rrt_connect
-from .play_scene import animate_segment
+from .trajectory import animate_segment
 
 OUTPUT = Path(__file__).resolve().parents[1] / 'output' / 'touch_goal_path.json'
 OBSTACLES = ('RobotTable', 'GoalTable', 'GoalStand', 'diningChair', 'laptop', 'projector')

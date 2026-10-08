@@ -1,5 +1,8 @@
 """Smooth cubic joint trajectories from the HW4 polynomial exercise."""
 
+import math
+import time
+
 import numpy as np
 
 
@@ -24,3 +27,19 @@ def trajectory_for_path(path, duration=2.0, steps_per_segment=51):
                 for a, b in zip(path[:-1], path[1:])]
     # Avoid a repeated endpoint between adjacent segments.
     return np.vstack([segments[0], *(segment[1:] for segment in segments[1:])])
+
+
+def animate_segment(start, end, set_joints, *, seconds=1.8, fps=20, sleep=time.sleep,
+                    clock=time.monotonic):
+    """Show one segment with eased-in/eased-out joint positions."""
+    start, end = np.asarray(start), np.asarray(end)
+    frames = max(2, math.ceil(seconds * fps))
+    frames_seconds = seconds / frames
+    samples = cubic_trajectory(start, end, steps=frames + 1)
+    begin = clock()
+    for index, pose in enumerate(samples[1:], start=1):
+        delay = begin + index * frames_seconds - clock()
+        if delay > 0:
+            sleep(delay)
+        set_joints(pose)
+

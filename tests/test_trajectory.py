@@ -25,3 +25,15 @@ def test_combined_trajectory_has_no_duplicate_waypoint():
 def test_invalid_duration():
     with pytest.raises(ValueError):
         cubic_trajectory([0], [1], duration=0)
+
+
+def test_animation_reaches_endpoint():
+    from src.trajectory import animate_segment
+    seen = []
+    now = [0.0]
+    def sleep(seconds):
+        now[0] += seconds
+    animate_segment([0, 0], [30, -12], lambda pose: seen.append(pose.copy()),
+                    seconds=2, fps=10, sleep=sleep, clock=lambda: now[0])
+    np.testing.assert_allclose(seen[-1], [30, -12])
+    assert len(seen) == 20
